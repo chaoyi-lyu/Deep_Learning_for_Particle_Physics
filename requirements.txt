@@ -1,2 +1,7 @@
 pandas
 numpy
+torch
+Ninja
+pytorch3d
+matplotlib
+
