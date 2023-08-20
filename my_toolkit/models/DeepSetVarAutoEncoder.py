@@ -75,7 +75,7 @@ class Encoder(nn.Module):
         x = self.particle_conv(x)
         x, perm = self.fspool(x)
         samples = self.Sampling(x)
-        return x[:,::2], x[:,1::2], samples
+        return x[:,::2], x[:,1::2], samples, perm
 
     def Sampling(self, inputs):
         mus = inputs[:,::2]
@@ -127,7 +127,7 @@ class AutoEncoder(nn.Module):
         self.decoder = Decoder(self.num_particles, model.latent, 256, 256)
 
     def forward(self, x):
-        mean, log_var, sample = self.encoder(x)
+        mean, log_var, sample, perm = self.encoder(x)
         kine_pred, class_pred = self.decoder(sample)
         return mean, log_var, kine_pred, class_pred  
 
