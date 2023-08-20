@@ -152,7 +152,7 @@ class LossFunc(nn.Module):
 
     def ChamferLoss(self, kine_input, kine_pred):
         dist1, dist2, idx1, idx2 = self.chd(kine_input, kine_pred)
-        dist_loss = dist1.sum() + dist2.sum()
+        dist_loss = dist1.sum(axis=1) + dist2.sum(axis=1)
         return dist_loss, idx1, idx2
 
     def ClassLoss(self, class_input, class_pred, indxs):
@@ -163,11 +163,11 @@ class LossFunc(nn.Module):
             for j in range(idx1.shape[1]):
                 sorted_pred[i,j,:] = class_pred[i,idx1[i,j],:]
                 sorted_input[i,j,:] = class_input[i,idx2[i,j],:]
-        loss = - (sorted_pred * class_input + sorted_input * class_pred).sum()
+        loss = - (sorted_pred * class_input + sorted_input * class_pred).sum(axis=1).sum(axis=1)
         return loss
 
     def KLDivergence(self, mu, log_var):
-        KLD = -0.5 * torch.sum(1 + log_var - mu.pow(2) - log_var.exp())
+        KLD = -0.5 * torch.sum(1 + log_var - mu.pow(2) - log_var.exp(), axis=1)
         return KLD
 
 
