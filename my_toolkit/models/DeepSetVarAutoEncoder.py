@@ -163,7 +163,7 @@ class LossFunc(nn.Module):
             for j in range(idx1.shape[1]):
                 sorted_pred[i,j,:] = class_pred[i,idx1[i,j],:]
                 sorted_input[i,j,:] = class_input[i,idx2[i,j],:]
-        loss = (sorted_pred * class_input + sorted_input * class_pred).sum()
+        loss = - (sorted_pred * class_input + sorted_input * class_pred).sum()
         return loss
 
     def KLDivergence(self, mu, log_var):
