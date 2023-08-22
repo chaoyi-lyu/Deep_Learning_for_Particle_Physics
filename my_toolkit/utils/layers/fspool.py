@@ -182,7 +182,7 @@ def cont_sort(x, perm=None, temp=1):
 
 
 if __name__ == '__main__':
-    pool = FSort(2, 1)
+    pool = FSPool(2, 1)
     x = torch.arange(0, 2*3*4).view(3, 2, 4).float()
     print('x', x)
     y, perm = pool(x, torch.LongTensor([2,3,4]))
