@@ -29,7 +29,8 @@ def _validate_chamfer_reduction_inputs(
             points, can be one of ["mean", "sum"].
     """
     if batch_reduction is not None and batch_reduction not in ["mean", "sum"]:
-        raise ValueError('batch_reduction must be one of ["mean", "sum"] or None')
+        raise ValueError(
+            'batch_reduction must be one of ["mean", "sum"] or None')
     if point_reduction not in ["mean", "sum"]:
         raise ValueError('point_reduction must be one of ["mean", "sum"]')
 
@@ -70,6 +71,7 @@ def _handle_pointcloud_input(
             + "(minibatch, num_points, 3)."
         )
     return X, lengths, normals
+
 
 class ChamferDistance(torch.nn.Module):
     def forward(
@@ -118,8 +120,10 @@ class ChamferDistance(torch.nn.Module):
         """
         _validate_chamfer_reduction_inputs(batch_reduction, point_reduction)
 
-        x, x_lengths, x_normals = _handle_pointcloud_input(x, x_lengths, x_normals)
-        y, y_lengths, y_normals = _handle_pointcloud_input(y, y_lengths, y_normals)
+        x, x_lengths, x_normals = _handle_pointcloud_input(
+            x, x_lengths, x_normals)
+        y, y_lengths, y_normals = _handle_pointcloud_input(
+            y, y_lengths, y_normals)
 
         return_normals = x_normals is not None and y_normals is not None
 
@@ -152,9 +156,10 @@ class ChamferDistance(torch.nn.Module):
                     )
                 return ((x.sum((1, 2)) * weights) * 0.0, (x.sum((1, 2)) * weights) * 0.0)
 
-
-        x_nn = knn_points(x, y, lengths1=x_lengths, lengths2=y_lengths, K=1, norm=1) # L1 Norm
-        y_nn = knn_points(y, x, lengths1=y_lengths, lengths2=x_lengths, K=1, norm=1) # L1 Norm
+        x_nn = knn_points(x, y, lengths1=x_lengths,
+                          lengths2=y_lengths, K=1, norm=1)  # L1 Norm
+        y_nn = knn_points(y, x, lengths1=y_lengths,
+                          lengths2=x_lengths, K=1, norm=1)  # L1 Norm
 
         cham_x = x_nn.dists[..., 0]  # (N, P1)
         cham_y = y_nn.dists[..., 0]  # (N, P2)
@@ -168,5 +173,4 @@ class ChamferDistance(torch.nn.Module):
             cham_x *= weights.view(N, 1)
             cham_y *= weights.view(N, 1)
 
-        return cham_x, cham_y, x_nn.idx[...,-1], y_nn.idx[...,-1]
-
+        return cham_x, cham_y, x_nn.idx[..., -1], y_nn.idx[..., -1]

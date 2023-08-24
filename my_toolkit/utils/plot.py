@@ -2,11 +2,13 @@ from IPython import display
 from matplotlib import pyplot as plt
 from matplotlib_inline import backend_inline
 
+
 def use_svg_display():
     """Use the svg format to display a plot in Jupyter.
 
     Defined in :numref:`sec_calculus`"""
     backend_inline.set_matplotlib_formats('svg')
+
 
 def set_axes(axes, xlabel, ylabel, xlim, ylim, xscale, yscale, legend):
     """Set the axes for matplotlib.
@@ -19,8 +21,10 @@ def set_axes(axes, xlabel, ylabel, xlim, ylim, xscale, yscale, legend):
         axes.legend(legend)
     axes.grid()
 
+
 class Accumulator:
     """For accumulating sums over `n` variables."""
+
     def __init__(self, n):
         """Defined in :numref:`sec_utils`"""
         self.data = [0.0] * n
@@ -32,10 +36,12 @@ class Accumulator:
         self.data = [0.0] * len(self.data)
 
     def __getitem__(self, idx):
-        return self.data[idx]    
+        return self.data[idx]
+
 
 class Animator:
     """For plotting data in animation."""
+
     def __init__(self, xlabel=None, ylabel=None, legend=None, xlim=None,
                  ylim=None, xscale='linear', yscale='linear',
                  fmts=('-k', 'm--', 'g-.', 'r:'), nrows=1, ncols=1,
@@ -74,6 +80,3 @@ class Animator:
         self.config_axes()
         display.display(self.fig)
         display.clear_output(wait=True)
-
-
-

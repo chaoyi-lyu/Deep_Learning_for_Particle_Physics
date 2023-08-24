@@ -20,6 +20,7 @@ class FSPool(nn.Module):
 
         FSPool: Learning Set Representations with Featurewise Sort Pooling.
     """
+
     def __init__(self, in_channels, n_pieces, relaxed=False):
         """
         in_channels: Number of channels in input
@@ -51,7 +52,8 @@ class FSPool(nn.Module):
 
         Returns: pooled input x, used permutation matrix perm
         """
-        assert x.size(1) == self.weight.size(0), 'incorrect number of input channels in weight'
+        assert x.size(1) == self.weight.size(
+            0), 'incorrect number of input channels in weight'
         # can call withtout length tensor, uses same length for all sets in the batch
         if n is None:
             n = x.new(x.size(0)).fill_(x.size(2)).long()
@@ -134,8 +136,10 @@ def fill_sizes(sizes, x=None):
         max_size = sizes.max()
     size_tensor = sizes.new(sizes.size(0), max_size).float().fill_(-1)
 
-    size_tensor = torch.arange(end=max_size, device=sizes.device, dtype=torch.float32)
-    size_tensor = size_tensor.unsqueeze(0) / (sizes.float() - 1).clamp(min=1).unsqueeze(1)
+    size_tensor = torch.arange(
+        end=max_size, device=sizes.device, dtype=torch.float32)
+    size_tensor = size_tensor.unsqueeze(
+        0) / (sizes.float() - 1).clamp(min=1).unsqueeze(1)
 
     mask = size_tensor <= 1
     mask = mask.unsqueeze(1)
@@ -153,10 +157,11 @@ def deterministic_sort(s, tau):
     tau: temperature for relaxation. Scalar.
     """
     n = s.size()[1]
-    one = torch.ones((n, 1), dtype = torch.float32, device=s.device)
+    one = torch.ones((n, 1), dtype=torch.float32, device=s.device)
     A_s = torch.abs(s - s.permute(0, 2, 1))
     B = torch.matmul(A_s, torch.matmul(one, one.transpose(0, 1)))
-    scaling = (n + 1 - 2 * (torch.arange(n, device=s.device) + 1)).type(torch.float32)
+    scaling = (n + 1 - 2 * (torch.arange(n, device=s.device) + 1)
+               ).type(torch.float32)
     C = torch.matmul(s, scaling.unsqueeze(0))
     P_max = (C - B).permute(0, 2, 1)
     sm = torch.nn.Softmax(-1)
@@ -185,7 +190,7 @@ if __name__ == '__main__':
     pool = FSPool(2, 1)
     x = torch.arange(0, 2*3*4).view(3, 2, 4).float()
     print('x', x)
-    y, perm = pool(x, torch.LongTensor([2,3,4]))
+    y, perm = pool(x, torch.LongTensor([2, 3, 4]))
     print('perm')
     print(perm)
     print('result')
